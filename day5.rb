@@ -28,26 +28,21 @@ Line = Struct.new(:start_point, :end_point) do
 
   def points
     rv = []
-    if horizontal?
-      diff = (end_point.x - start_point.x)
-      dir = diff / diff.abs
-      idx = start_point.x
-      loop do
-        p = Point.new(idx, start_point.y)
-        rv << p
-        break if end_point.x == p.x
-        idx += dir
-      end
-    elsif vertical?
-      diff = (end_point.y - start_point.y)
-      dir = diff / diff.abs
-      idx = start_point.y
-      loop do
-        p = Point.new(start_point.x, idx)
-        rv << p
-        break if end_point.y == p.y
-        idx += dir
-      end
+    x_diff = (end_point.x - start_point.x)
+    x_dir = x_diff != 0 ? x_diff / x_diff.abs : 0
+
+    y_diff = (end_point.y - start_point.y)
+    y_dir = y_diff != 0 ? y_diff / y_diff.abs : 0
+
+    x_idx = start_point.x
+    y_idx = start_point.y
+
+    loop do
+      p = Point.new(x_idx, y_idx)
+      rv << p
+      break if end_point.x == p.x && end_point.y == p.y
+      x_idx += x_dir
+      y_idx += y_dir
     end
 
     rv
@@ -61,7 +56,7 @@ def data_to_lines(data)
   end
 end
 
-def intersections(lines)
+def intersection_map(lines)
   rv = {}
   lines.each do |line|
     line.points.each do |p|
@@ -69,12 +64,28 @@ def intersections(lines)
       rv[[p.x, p.y]] += 1
     end
   end
-
-  rv.keys.select {|k| rv[k] > 1}
+  rv
 end
 
-puts intersections(data_to_lines(data)).size #map(&:to_s)
+def intersections(lines)
+  rv = intersection_map(lines)
+  rv.keys.select {|k| rv[k] > 1}.size
+end
 
-# puts lines[0].points
+def dump_map(lines)
+  ints = intersection_map(lines)
+
+  (0..9).each do |y|
+    (0..9).each do |x|
+      print ints[[x,y]] || '.'
+    end
+    puts ""
+  end
+end
+
+lines = data_to_lines(data)
+puts intersections(lines)
+# puts lines[0].points.map(&:to_s)
+# puts lines[1].points.map(&:to_s)
 # puts lines[2].points
 # puts lines[4].points
