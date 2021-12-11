@@ -56,11 +56,11 @@ def step(data)
 
   while to_process.any?
     row, col = to_process.shift
-    puts "row: #{row} col: #{col}"
+    # puts "row: #{row} col: #{col}"
     [[0,1], [0, -1], [1, 0], [-1, 0], [-1, 1], [1, 1], [-1, -1], [1, -1]].each do |(drow, dcol)|
       rown = drow + row
       coln = dcol + col
-      puts "rown #{rown} coln #{coln}"
+      # puts "rown #{rown} coln #{coln}"
       if rown >= 0 && coln >= 0 && rown < data.size && coln < data[rown].size && data[rown][coln] <= 9
         data[rown][coln] += 1
         if data[rown][coln] > 9
@@ -82,11 +82,28 @@ def step(data)
   return {flashed_count: flashed_count, data: data}
 end
 
-total_flashes = 0
-100.times do
-  rv = step(data)
-  total_flashes += rv[:flashed_count]
-  data = rv[:data]
+def part1(data)
+  total_flashes = 0
+  100.times do
+    rv = step(data)
+    total_flashes += rv[:flashed_count]
+    data = rv[:data]
+  end
+  # puts data.inspect
+  puts total_flashes
 end
-puts data.inspect
-puts total_flashes
+
+def part2(data)
+  cnt = 0
+  loop do
+    sum = data.flat_map {|row| row.sum }.sum
+
+    return cnt if sum == 0
+
+    cnt +=1
+    # puts "cnt: #{cnt} sum #{sum}"
+    data = step(data)[:data]
+  end
+end
+
+puts part2(data)
