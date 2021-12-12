@@ -33,7 +33,16 @@ full_paths = []
 path_to_map = ['start']
 
 def next_steps(path_map, current_path)
-  path_map[current_path[-1]].select {|p| p.upcase == p || !current_path.include?(p)}
+  path_map[current_path[-1]].select do |p|
+    next true if p.upcase == p
+
+    match_cnt = current_path.count {|cp| cp == p }
+    next true if match_cnt == 0
+
+    next false if %w(start end).include?(p)
+
+    current_path.reject {|p| p.upcase == p}.group_by {|s| s}.values.map(&:size).max < 2
+  end
 end
 
 def all_next_steps(path_map, current_path)
