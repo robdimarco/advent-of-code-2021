@@ -18,12 +18,29 @@ row_count = risks_array.length
 col_count = risks_array[0].length
 
 risks = {}
-(0...row_count).each do |row|
-  (0..col_count).each do |col|
-    risks[[row, col]] = risks_array[row][col]
+5.times do |rn|
+  5.times do |cn|
+    (0...row_count).each do |row|
+      (0...col_count).each do |col|
+        # puts "rn: #{rn} cn #{cn} row #{row} col #{col}"
+        orig_value = risks_array[row][col]
+        new_val = orig_value + rn + cn
+        new_val = new_val - 9 if new_val >= 10
+        # puts "setting [#{row_count * rn + row}, #{col_count * cn + col}] to #{new_val}"
+        risks[[row_count * rn + row, col_count * cn + col]] = new_val
+      end
+    end
   end
 end
 
+row_count = row_count * 5
+col_count = col_count * 5
+# (0...row_count).each do |row|
+#   (0..col_count).each do |col|
+#     print risks[[row, col]]
+#   end
+#   puts
+# end
 
 to_check = [[0,0]]
 best_paths = {[0,0] => {path: [[0,0]], risk: 0}}
@@ -45,6 +62,7 @@ loop do
         path: path + [new_pos],
         risk: risk_at_npos
       }
+      puts "setting path on #{new_pos.inspect} to #{risk_at_npos}"
       to_check.push new_pos
     end
   end
