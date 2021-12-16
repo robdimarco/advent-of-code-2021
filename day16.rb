@@ -92,28 +92,54 @@ def sum_versions(packet)
     version += packet[:packet_value].map{|p| sum_versions(p)}.sum
   end
 end
+
+def value(packet)
+  case packet[:packet_type]
+  when 0
+    packet[:packet_value].map {|subp| value(subp)}.sum
+  when 1
+    packet[:packet_value].map {|subp| value(subp)}.reduce(:*)
+  when 2
+    packet[:packet_value].map {|subp| value(subp)}.min
+  when 3
+    packet[:packet_value].map {|subp| value(subp)}.max
+  when 4
+    packet[:packet_value]
+  when 5
+    value(packet[:packet_value][0]) > value(packet[:packet_value][1]) ? 1 : 0
+  when 6
+    value(packet[:packet_value][0]) < value(packet[:packet_value][1]) ? 1 : 0
+  when 7
+    value(packet[:packet_value][0]) == value(packet[:packet_value][1]) ? 1 : 0
+  else
+    raise "Invalid packet type #{packet[:packet_type]}"
+  end
+end
+
 # puts next_packet(bits)
 
-data = '8A004A801A8002F478'
-bits = data.chars.map {|c| HEXA[c]}.join
-puts sum_versions(next_packet(bits)) == 16
+# data = '8A004A801A8002F478'
+# bits = data.chars.map {|c| HEXA[c]}.join
+# puts sum_versions(next_packet(bits)) == 16
 
-data = '620080001611562C8802118E34'
-bits = data.chars.map {|c| HEXA[c]}.join
-# puts next_packet(bits)
+# data = '620080001611562C8802118E34'
+# bits = data.chars.map {|c| HEXA[c]}.join
+# # puts next_packet(bits)
+# # puts sum_versions(next_packet(bits))
+# puts sum_versions(next_packet(bits)) == 12
+
+# data = 'C0015000016115A2E0802F182340'
+# bits = data.chars.map {|c| HEXA[c]}.join
+# puts sum_versions(next_packet(bits)) == 23
+
+# data = 'A0016C880162017C3686B18A3D4780'
+# bits = data.chars.map {|c| HEXA[c]}.join
+# puts sum_versions(next_packet(bits)) == 31
+
+# data = File.read('day16.txt')
+# # puts data
+# bits = data.chars.map {|c| HEXA[c]}.join
+# # puts bits
 # puts sum_versions(next_packet(bits))
-puts sum_versions(next_packet(bits)) == 12
+puts value(next_packet(File.read('day16.txt').chars.map {|c| HEXA[c]}.join))
 
-data = 'C0015000016115A2E0802F182340'
-bits = data.chars.map {|c| HEXA[c]}.join
-puts sum_versions(next_packet(bits)) == 23
-
-data = 'A0016C880162017C3686B18A3D4780'
-bits = data.chars.map {|c| HEXA[c]}.join
-puts sum_versions(next_packet(bits)) == 31
-
-data = File.read('day16.txt')
-# puts data
-bits = data.chars.map {|c| HEXA[c]}.join
-# puts bits
-puts sum_versions(next_packet(bits))
