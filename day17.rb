@@ -43,18 +43,23 @@ def max_height(velocity, target)
   end
 end
 
-mmh = 0
-biggest_y = 0
-100000.times do
-  x = rand(x_range.max) + 1
-  y = biggest_y + rand(y_range.max.abs)
-  mh = max_height([x, y], target)
-  # puts [x, y].inspect
-  next unless mh
-  if mh > mmh
-    puts [x,y].inspect
-    biggest_y = y
-    mmh = mh
+matches = []
+(0..(x_range.max + 1)).each do |x|
+  (-100..100).each do |y|
+    next if matches.include?([x,y])
+    # puts [x, y].inspect
+    if max_height([x, y], target)
+      matches += [[x,y]]
+    end
   end
+  # puts matches.count
+  # next unless mh
+  # if mh > mmh
+  #   puts [x,y].inspect
+  #   biggest_y = y
+  #   mmh = mh
+  # end
 end
-puts mmh
+puts matches.inspect
+puts matches.count
+
