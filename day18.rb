@@ -155,136 +155,19 @@ summed = sum_list(data)
 # pp magnitude([[9,1],[1,9]])
 pp magnitude(summed)
 
+def max_magnitude(data)
+  lines =  data.lines
+  max = -1
+  (0...lines.size).each do |n|
+    (0...lines.size).each do |m|
+      next if m == n
+      val = magnitude(add(eval(lines[n]), eval(lines[m])))
+      # puts "val: #{val} from #{n} + #{m}"
+      max = [max, val].max
+    end
+  end
+  return max
+end
 
+pp max_magnitude(data)
 
-# def add(p1, p2)
-#   arr = p1.map {|n| n.depth += 1; n}
-#   p2.each {|n| arr << n; n.depth +=1}
-#   pp "base_add: #{dump(arr)}"
-#   reduce(arr)
-# end
-
-# def explode(nums)
-#   # pp "nums #{nums}"
-#   nums.each_with_index do |n, idx|
-#     if n.depth > 4
-#       next_n = nums[idx + 1] # is not nil, same depth as n
-
-#       if idx > 0
-#         left_n = nums[idx - 1]
-#         left_n.number += n.number
-#       end
-
-#       right_n = nums[idx + 2]
-#       if right_n
-#         puts "setting #{idx + 2} to #{right_n.number + next_n.number }"
-#         right_n.number += next_n.number
-#       end
-
-#       nums.delete_at(idx + 1)
-#       n.number = 0
-#       n.depth -= 1
-#       prev_val = nums[idx - 1]
-#       n.position = prev_val.nil? || prev_val.depth != n.depth || prev_val.position == :right ? :left : :right
-#       return nums, true
-#     end
-#   end
-#   return nums, false
-# end
-
-# def split(nums)
-#   nums.each_with_index do |n, idx|
-#     if n.number >= 10
-
-#       nums.insert(idx + 1, DeepNumber.new((n.number + 1)/2, n.depth, :right))
-#       n.number = n.number / 2
-#       n.depth += 1
-#       n.position = :left
-#       return nums, true
-#     end
-#   end
-#   return nums, false
-# end
-
-# def as_dn(pair)
-#   [DeepNumber.new(pair[0], 1, :left), DeepNumber.new(pair[1], 1, :right)]
-# end
-
-# def dump(nums)
-#   current_depth = 0
-#   rv = ''
-#   nums.each do |n|
-#     # puts "n: #{n} #{current_depth}"
-#     if n.position == :left
-#       while current_depth >= n.depth do
-#         rv << ']'
-#         current_depth -= 1
-#       end
-
-#       rv << ',' unless rv == ''
-#       while current_depth < n.depth do
-#         rv << '['
-#         current_depth += 1
-#       end
-
-#       rv << n.number.to_s
-
-#     elsif n.position == :right
-#       rv << ",#{n.number}]"
-#       current_depth -= 1
-#     end
-#   end
-#   current_depth.times do
-#     rv << ']'
-#   end
-#   rv
-# end
-
-# pp dump(
-#   add(
-#     [
-#       DeepNumber.new(4, 4, :left),
-#       DeepNumber.new(3, 4, :right),
-#       DeepNumber.new(4, 3, :right),
-#       DeepNumber.new(4, 2, :right),
-#       DeepNumber.new(7, 2, :left),
-#       DeepNumber.new(8, 4, :left),
-#       DeepNumber.new(4, 4, :right),
-#       DeepNumber.new(9, 3, :right),
-#     ],
-#     as_dn([1,1])
-#   )
-# )
-
-# def parse(str)
-#   rv = []
-#   pos_stack = []
-#   str.chars.each do |c|
-#     case c
-#     when '['
-#       pos_stack.push :left
-#     when ']'
-#       pos_stack.pop
-#     when ','
-#       # pos_stack.pop
-#       # pos_stack.push :right
-#     when /[0-9]/
-#       position = pos_stack.pop
-#       rv << DeepNumber.new(c.to_i, pos_stack.size + 1, position)
-#       pos_stack.push :right
-#     end
-#     pp "#{c}=>#{pos_stack}"
-#   end
-
-#   rv
-# end
-# s = '[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]'
-
-# # pp parse(s)
-# # pp parse(s)
-
-# # puts dump(parse(s))
-# # puts s
-
-
-# pp data.lines.reduce([]) {|arr, n| add(arr, parse(n))}
